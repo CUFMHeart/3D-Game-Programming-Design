@@ -3,7 +3,7 @@
 > **You can’t connect the dots looking forward; you can only connect them looking backwards**
 > *— Steve Jobs, Stanford Report, June 14, 2005*
 
-**博客地址**： https://sentimentalswordsman.github.io/2019/09/04/3dG1-World-of-Goo/
+**博客地址**： https://sentimentalswordsman.github.io/2019/09/10/3dG2-离散仿真引擎基础/
 
 **视频链接**： https://www.bilibili.com/video/av67477674/
 
