@@ -4,11 +4,13 @@
 >
 > *— Steve Jobs, Stanford Report, June 14, 2005*
 
-## 说明
+## README
 
 **博客地址**：https://sentimentalswordsman.github.io/2019/09/20/3dG3-空间与运动/
 
-**视频链接**： https://www.bilibili.com/video/av67477674/
+**SolarSystem视频链接**： https://www.bilibili.com/video/av68576152/
+
+**PriestsAndDevils视频链接**：https://www.bilibili.com/video/av68576206/
 
 说明：博客包含简答题（包括太阳系项目）、编程实践（包括牧师与魔鬼游戏）、选做题。
 
@@ -303,10 +305,6 @@ public class Moon_revolution : MonoBehaviour
 
 ![](./image/4.png)
 
-**代码地址：**
-
-**视频地址：**
-
 ### 2 编程实践
 
 #### 2.1 游戏脚本阅读
@@ -354,23 +352,145 @@ public class Moon_revolution : MonoBehaviour
 
 #### 2.4 完成情况
 
-游戏界面如下：
-
-
-
 项目结构如下：
 
+![](./image/5.png)
+
+游戏界面如下：
+
+![](./image/6.png)
+
+![](./image/7.png)
+
+![](./image/8.png)
+
+![](./image/9.png)
+
+#### 2.5 项目设计
+
+代码篇幅过长，详细见代码地址。
+
+- **组织游戏资源**
+  - 材料（Materials）
+  - 预制（Resources/Prefabs）
+  - 脚本（Scripts）
+- **创建场景启动对象和控制器**
+  - 构造 Main 空对象，并挂载 FirstController 代码，使得游戏加载行为在你的控制下
+- **Director（导演）对象与单实例模式**
+  - 创建 SSDirector 类
+- **SceneController（场记）**
+  - BoatSceneController.cs
+  - CoastSceneController.cs
+  - GameObjects.cs
+  - Moveable.cs
+
+如：GameObjects.cs
+
+```C#
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Interfaces;
 
 
-核心代码如下：
+public class GameObjects
+{
+    readonly GameObject Instance;
+    readonly Moveable Move;
+    readonly ClickGUI clickGUI;
+    readonly int type;
+    bool onBoat = false;
+    CoastSceneController coastScene;
 
+    public GameObjects(int num)
+    {
+        //  1-p, 0-d
+        if (num == 1)
+        {
+            Instance = Object.Instantiate(Resources.Load<GameObject>("Prefabs/priest"), Vector3.zero, Quaternion.identity);
+            type = 1;
+        }
+        else
+        {
+            Instance = Object.Instantiate(Resources.Load<GameObject>("Prefabs/devil"), Vector3.zero, Quaternion.identity);
+            type = 0;
+        }
+        Move = Instance.AddComponent(typeof(Moveable)) as Moveable;
+        clickGUI = Instance.AddComponent(typeof(ClickGUI)) as ClickGUI;
+        clickGUI.setController(this);
+    }
 
+    public void setName(int num)
+    {
+        if(num < 3)
+        {
+            num++;
+            Instance.name = "priest" + num;
+        }
+        else
+        {
+            num -= 2;
+            Instance.name = "devil" + num;
+        }
+    }
 
-#### 2.5 项目地址
+    public void setPosition(Vector3 pos)
+    {
+        Instance.transform.position = pos;
+    }
 
-**代码地址：**
+    public void moveToPosition(Vector3 dest)
+    {
+        Move.SetDest(dest);
+    }
 
-**视频地址：**
+    public int getType()
+    {
+        return type;
+    }
+
+    public string getName()
+    {
+        return Instance.name;
+    }
+
+    public void getOnBoat(BoatSceneController boat)
+    {
+        coastScene = null;
+        Instance.transform.parent = boat.GetGameobject().transform;
+        onBoat = true;
+    }
+
+    public void getOnCoast(CoastSceneController coasti)
+    {
+        coastScene = coasti;
+        Instance.transform.parent = null;
+        onBoat = false;
+    }
+
+    public bool isOnBoat()
+    {
+        return onBoat;
+    }
+
+    public CoastSceneController getCoastSceneController()
+    {
+        return coastScene;
+    }
+
+    public void Reset()
+    {
+        //  reset后回到岸上
+        Move.Reset();
+        coastScene = (SSDirector.getInstance().currentScenceController as FirstController).coast1;
+        getOnCoast(coastScene);
+        setPosition(coastScene.getEmptyPosition());
+        coastScene.getOnCoast(this);
+    }
+}
+```
+
+- 接口（Interface）
 
 ### 3 思考题
 

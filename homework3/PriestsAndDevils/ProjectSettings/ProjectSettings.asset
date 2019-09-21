@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 15
-  productGUID: 730ca538ebf9c438b83bb87bff76646b
+  productGUID: 4f3f44e8ad6f9447bac5b9f5be917e96
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -618,9 +618,9 @@ PlayerSettings:
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
   apiCompatibilityLevel: 6
-  cloudProjectId: 07bbdf2f-6ee0-4a46-8670-f13221226081
+  cloudProjectId: 2ab5833a-25f3-4849-b124-475e6867975d
   framebufferDepthMemorylessMode: 0
-  projectName: PriestsAndDevils
+  projectName: PriestsAndDevils (1)
   organizationId: fenghuangyuan
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
