@@ -6,7 +6,7 @@
 
 ## README
 
-**博客地址**：
+**博客地址**：https://sentimentalswordsman.github.io/2019/10/02/3dG4-游戏对象与图形基础/
 
 **PriestsAndDevils2视频链接**：https://www.bilibili.com/video/av69706414/
 
