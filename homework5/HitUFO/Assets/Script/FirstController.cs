@@ -85,6 +85,14 @@ public class FirstController : MonoBehaviour, ISceneController, UserAction
                 updateCount = 0;
             }
         }
+        if (state)
+        {
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Vector3 pos = Input.mousePosition;
+                Hit(pos);
+            }
+        }
 	}
 
     public void Hit(Vector3 pos)
@@ -100,6 +108,8 @@ public class FirstController : MonoBehaviour, ISceneController, UserAction
                 hitNum++;
                 //  颜色不同，得分不同
                 Color c = hit.collider.gameObject.GetComponent<Renderer>().material.color;
+                Debug.Log("score:"+score+"  color:"+c);
+                Debug.Log("hit:" + hit.collider.gameObject + " stacktrace: " + new System.Exception());
                 if (c == Color.red)
                     score += 1;
                 if (c == Color.yellow)

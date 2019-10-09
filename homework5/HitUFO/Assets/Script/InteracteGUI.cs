@@ -33,7 +33,7 @@ public class InteracteGUI : MonoBehaviour
         GUI.Label(new Rect(680, 30, 100, 70), "Score: " + user_act.GetScore().ToString(), Style);
         GUI.Label(new Rect(680, 45, 100, 70), "Time: " + ((int)(Time.time - slip)).ToString(), Style);
         GUI.Label(new Rect(680, 60, 100, 70), "Round: " + round, Style);
-        // GUI.Label(new Rect(680, 75, 100, 70), "Miss: " + user_act.GetMiss(), Style);
+        GUI.Label(new Rect(680, 75, 100, 70), "Pre-Round Miss: " + user_act.GetMiss(), Style);
         if (!flag)
         {
             if (GUI.Button(new Rect(380, 200, 140, 70), "Start"))
@@ -45,13 +45,6 @@ public class InteracteGUI : MonoBehaviour
         }
         if (flag)
         {
-            round = user_act.GetRound();
-            if (Input.GetButtonDown("Fire1"))
-            {
-                Vector3 pos = Input.mousePosition;
-                user_act.Hit(pos);
-            }
-            //  限制 round
             if (round > 4)
             {
                 round = 4;
