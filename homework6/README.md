@@ -1,45 +1,33 @@
-# 3D Game 5 - 与游戏世界交互
+# 3D Game 6 - 物理系统与碰撞
 
-> **It freed me to enter one of the most creative periods of my life**
+> **It was awful tasting medicine, but I guess the patient needed it. Sometimes life hits you in the head with a brick. Don’t lose faith**
 >
 > *— Steve Jobs, Stanford Report, June 14, 2005*
 
 ## README
 
-**博客地址**：https://sentimentalswordsman.github.io/2019/10/09/3dG5-与游戏世界交互/
+**博客地址**：https://sentimentalswordsman.github.io/2019/10/18/3dG6-物理系统与碰撞/
 
-**HitUFO视频链接**：https://www.bilibili.com/video/av70621955/
+**HitUFO视频链接**：https://www.bilibili.com/video/av71623568/
 
-## 与游戏世界交互
+## 物理系统与碰撞
 
-### 游戏交互与创新
+### 物理引擎
 
-游戏交互是玩家体验的基础。这里**交互模型**定义为建立输入设备的输入与游戏世界中的对象行为之间的关系，以及游戏世界状态与玩家感知（视觉、听觉、触觉、嗅觉等之间的关系）。
+**作用：** **物理引擎（Physics Engine）**是一个软件组件，它将游戏世界对象赋予现实世界物理属性（重量、形状等），并抽象为刚体（Rigid）模型（也包括滑轮、绳索等），使得游戏物体在力的作用下，仿真现实世界的运动及其之间的碰撞过程。即在牛顿经典力学模型基础之上，通过简单的 API 计算游戏物体的运动、旋转和碰撞，现实的运动与碰撞的效果。
 
-游戏**典型的交互模型**包括：
-
-- 角色扮演模型。即玩家扮演游戏世界中的一个对象，并实现游戏操纵杆及其按钮的操作与游戏对象行为之间的映射。这样，玩家就可以通过一个或多个设备控制游戏对象。
-- 多视角交互模型。即为游戏世界构建多个视图，每个视图反映不同观察视角或游戏的状态，使得玩家可以在不同视图中选择合适的方式（如菜单、软件工具等）与游戏世界交互。
-- 团队交互模型。在社交类游戏中，通常有视图反映协同玩家状态，如队友列表等，玩家可通过广播、视频、聊天室、私聊等即时沟通渠道实现协作。
-- 竞技交互模式。具备竞技模式一般需要支持更多的游戏设备，以满足发烧玩家的需要。使用 180 度屏幕、7 声道杜比立体声、游戏鼠标等的玩家，显然都是游戏公司争夺的 VIP。
-- 桌面、移动交互模式。以大众客户为目标，通常是小游戏或商业游戏。
-
-**游戏创新**理念：
-
-- 第一层：交互装备创新
-- 第二层：机制创新
-- 第三层：以客户为中心的创新
+**实现：** 随着技术的进步，作为典型密集计算场景，物理引擎逐步形成了两大流派，分别对应以 NVIDIA 为代表的 PhysX 和 以 Intel +AMD 为代表的 Havok 两大平台。
 
 ## 作业与练习
 
-### 1 编程实践
+### 改进飞碟游戏
 
-#### 1.1 技术要求
+#### 技术要求
 
-- 使用带缓存的工厂模式管理不同飞碟的生产与回收，该工厂必须是场景单实例的！具体实现见参考资源 Singleton 模板类
-- 近可能使用前面 MVC 结构实现人机交互与游戏模型分离
+- 按 adapter模式 修改飞碟游戏
+- 使它同时支持物理运动与运动学（变换）运动
 
-#### 1.2 游戏说明
+#### 游戏说明
 
 **游戏内容**
 
@@ -52,28 +40,74 @@
 3. 每个 trial 的飞碟有随机性，总体难度随 round 上升；
 4. 鼠标点中得分，得分规则按色彩、大小、速度不同计算，规则可自由设定。
 
-#### 1.3 完成情况
+#### 完成情况
 
 游戏界面如下：
 
-![](./image/2.png)
-
-![](./image/3.png)
-
-
-#### 1.4 项目设计
-
-首先创建需要的游戏元素，如飞碟的预制、Terrain等：
-
-![](./image/5.png)
-
 ![](./image/1.png)
 
-最终项目的文件结构如下：
 
-![](./image/4.png)
+#### 项目设计
 
-关于代码编写，首先是继承上一次项目“牧师与魔鬼-动作分离版”的成果，实现部分的代码复用：
+首先创建需要的游戏元素，如飞碟的预制、Terrain等，关于代码编写，首先是继承上一次项目“HitUFO-动作分离版”的成果，实现部分的代码复用，项目的文件结构如下：
+
+![](./image/2.png)
+
+优化了上一次的一个逻辑漏洞，最初把 Hit 的调用放在了 InteracteGUI 的 OnGUI 中，实际上根据逻辑，应该保留在 FirstController 中，否则会出现一个 bug，当点击到一个 UFO 时可能会计算多次得分，就此做了改动，消除该 bug，如下：
+
+```C#
+// FirstController.cs: void Update ()
+//  homework6 改进
+if (state)
+{
+  if (Input.GetButtonDown("Fire1"))
+  {
+    Vector3 pos = Input.mousePosition;
+    Hit(pos);
+  }
+}
+```
+
+新增了每个 round 后 miss 的 UFO 数目的统计，并可以在 GUI 上显示出来。
+
+新增了PhysicsEngineAction.cs，和 Action.cs 差不多，刻画了UFO的动作，但实现了运动对象的实例化。
+
+PhysicsEngineAction.cs：
+
+```C#
+public class PhysicsEngineAction : SSActionManager, SSActionCallback, PhysicsEngineManager
+{
+    //  EventType
+    public SSActionEventType comp = SSActionEventType.Completed;
+    //  UFO 计数器
+    int MoveUfoCount = 0;
+    //  UFO 的运动
+    public void UfoMove(UFO ufo)
+    {
+        MoveUfoCount++;
+        comp = SSActionEventType.Started;
+        CCPhysicsEngine action = CCPhysicsEngine.getAction(ufo.speed);
+        addAction(ufo.gameObject, action, this);
+    }
+    //  确保结束
+    public bool IsAllFinished()
+    {
+        if (MoveUfoCount == 0)
+            return true;
+        else
+            return false;
+    }
+    //  SSActionCallback
+    public void SSActionCallback(SSAction source)
+    {
+        MoveUfoCount--;
+        comp = SSActionEventType.Completed;
+        source.gameObject.SetActive(false);
+    }
+}
+```
+
+其他部分继承了上次项目的代码，仅有稍微改动，具体如下：
 
 SSDirector.cs：实现动作基类。
 
@@ -106,9 +140,14 @@ public class SSDirector : System.Object {
 }
 ```
 
-SSAction.cs：实现SSAction、CCMoveToAction和SSActionManager类。
+SSAction.cs：实现SSAction、CCMoveToAction和SSActionManager类，增加了CCPhysicsEngine类。
 
 ```C#
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Interfaces;
+
 // SSAction\CCMoveToAction\SSActionManager
 // ppt-04、05
 
@@ -210,9 +249,48 @@ public class SSActionManager : MonoBehaviour
         action.Start();
     }
 }
+
+//  new class for homework6
+public class CCPhysicsEngine : SSAction
+{
+    public float speedX;
+    public override void Start ()
+    {
+        if (!this.gameObject.GetComponent<Rigidbody>())
+        {
+            this.gameObject.AddComponent<Rigidbody>();
+        }
+        //  init Physics Engine
+        this.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * 9.8f * 0.6f, ForceMode.Acceleration);
+        this.gameObject.GetComponent<Rigidbody>().AddForce(new Vector3(speedX, 0, 0), ForceMode.VelocityChange);
+    }
+
+    public static CCPhysicsEngine getAction(float speedX)
+    {
+        //  use speedX
+        CCPhysicsEngine action = CreateInstance<CCPhysicsEngine>();
+        action.speedX = speedX;
+        return action;
+    }
+
+    override public void Update ()
+    {
+        if (transform.position.y <= 3)
+        {
+            //  move Rigidbody
+            Destroy(this.gameObject.GetComponent<Rigidbody>());
+            destroy = true;
+            CallBack.SSActionCallback(this);
+        }
+    }
+
+    private CCPhysicsEngine()
+    {
+    }
+}
 ```
 
-Action.cs：该脚本需添加到 Empty 物体上，刻画了UFO的动作。
+Action.cs：刻画了UFO的动作，上个版本完全由它负责动作管理。
 
 ```C#
 public class Action : SSActionManager, SSActionCallback
@@ -263,23 +341,34 @@ public class FirstController : MonoBehaviour, ISceneController, UserAction
     int updateCount = 0;
     bool state = false; //  1-playing
 
-    private Action action;
+    public bool PhysicEngineFlag = false;
+    public bool PhysicEngineState = false;
+
+    private PhysicsEngineManager action;
     private UFOFactory factory;
 
     void Awake()
     {
         //  GetComponent 需在外添加组件
-        action = GetComponent<Action>();
+        action = GetComponent<PhysicsEngineManager>();
         SSDirector director = SSDirector.getInstance();
         director.setFPS(60);
         director.currentScenceController = this;
         factory = UFOFactory.factory;
-        LoadResources();
+        GenGameObjects();
     }
 
     public void LoadResources()
     {   
-        GenGameObjects();
+        PhysicEngineState = PhysicEngineFlag;
+        if (PhysicEngineFlag)
+        {
+            action = this.gameObject.AddComponent<PhysicsEngineAction>() as PhysicsEngineManager;
+        }
+        else
+        {
+            action = this.gameObject.AddComponent<Action>() as PhysicsEngineManager;
+        }
     }
 
     public void GenGameObjects()
@@ -319,6 +408,7 @@ public class FirstController : MonoBehaviour, ISceneController, UserAction
                     return;
                 }
                 trial++;
+                // Debug.Log(round);
                 UFO ufoOfThisRound = factory.GetUFO(round);
                 action.UfoMove(ufoOfThisRound);
                 ufoNum++;
@@ -330,6 +420,15 @@ public class FirstController : MonoBehaviour, ISceneController, UserAction
                     miss = ufoNum - hitNum;
                 }
                 updateCount = 0;
+            }
+        }
+        //  homework6 改进
+        if (state)
+        {
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Vector3 pos = Input.mousePosition;
+                Hit(pos);
             }
         }
 	}
@@ -347,6 +446,8 @@ public class FirstController : MonoBehaviour, ISceneController, UserAction
                 hitNum++;
                 //  颜色不同，得分不同
                 Color c = hit.collider.gameObject.GetComponent<Renderer>().material.color;
+                // Debug.Log("score:"+score+"  color:"+c);
+                // Debug.Log("hit:" + hit.collider.gameObject + " stacktrace: " + new System.Exception());
                 if (c == Color.red)
                     score += 1;
                 if (c == Color.yellow)
@@ -363,13 +464,20 @@ public class FirstController : MonoBehaviour, ISceneController, UserAction
 
     public bool GameFinish()
     {
-        if (round > 4)
+        if (round > 4 && action.IsAllFinished())
         {
-            state = false;
-            return action.IsAllFinished();
+            if (PhysicEngineState)
+            {
+                Destroy(this.gameObject.GetComponent<PhysicsEngineAction>());
+            }
+            else
+            {
+                Destroy(this.gameObject.GetComponent<Action>());
+            }
+            factory.GetInSide();
+            return true;
         }
-        else
-            return false;
+        return false;
     }
 
     public void Restart()
@@ -507,7 +615,7 @@ public class UFOFactory
                     break;
                 }
         }
-        dire = UnityEngine.Random.Range(-1f, 1f) < 0 ? -2 : 2;
+        dire = UnityEngine.Random.Range(-1f, 1f) < 0 ? -1 : 1;
         ufo.Direction = new Vector3(dire, 0, 10);
         outUFO.Add(ufo.GetInstanceID(), ufo);
         ufo.name = ufo.GetInstanceID().ToString();
@@ -530,7 +638,7 @@ public class UFOFactory
 }
 ```
 
-Interfaces.cs：接口。
+Interfaces.cs：接口，对新的场记和新的控制器进行了链接。
 
 ```C#
 namespace Interfaces
@@ -553,6 +661,12 @@ namespace Interfaces
         void Restart();
     }
     
+    public interface PhysicsEngineManager
+    {
+        void UfoMove(UFO ufo);
+        bool IsAllFinished();
+    }
+
     public interface SSActionCallback
     {
         void SSActionCallback(SSAction source);
@@ -565,11 +679,12 @@ InteracteGUI.cs：实现GUI。
 ```C#
 public class InteracteGUI : MonoBehaviour
 {
-    UserAction user_act;
+    private int round = 1;
     private bool flag = false;
     private float slip;
     private float Now;
-    int round = 1;
+    UserAction user_act;
+    ISceneController scene_ctrl;
     private GUIStyle Style = new GUIStyle ();
 
 	void Start ()
@@ -579,20 +694,22 @@ public class InteracteGUI : MonoBehaviour
         Style.fontStyle = FontStyle.BoldAndItalic;
         Style.normal.textColor = Color.blue;
         Style.alignment = TextAnchor.MiddleCenter;
-        //  user_act init
+        //  user_act scene_ctrl init
         user_act = SSDirector.getInstance().currentScenceController as UserAction;
+        scene_ctrl = SSDirector.getInstance().currentScenceController as ISceneController;
         //  Time.time
         slip = Time.time;
     }
 
     private void OnGUI()
     {
+        round = user_act.GetRound();
         if (!flag)
             slip = Time.time;
         GUI.Label(new Rect(680, 30, 100, 70), "Score: " + user_act.GetScore().ToString(), Style);
         GUI.Label(new Rect(680, 45, 100, 70), "Time: " + ((int)(Time.time - slip)).ToString(), Style);
         GUI.Label(new Rect(680, 60, 100, 70), "Round: " + round, Style);
-        // GUI.Label(new Rect(680, 75, 100, 70), "Miss: " + user_act.GetMiss(), Style);
+        GUI.Label(new Rect(680, 75, 100, 70), "Pre-Round Miss: " + user_act.GetMiss(), Style);
         if (!flag)
         {
             if (GUI.Button(new Rect(380, 200, 140, 70), "Start"))
@@ -604,13 +721,6 @@ public class InteracteGUI : MonoBehaviour
         }
         if (flag)
         {
-            round = user_act.GetRound();
-            if (Input.GetButtonDown("Fire1"))
-            {
-                Vector3 pos = Input.mousePosition;
-                user_act.Hit(pos);
-            }
-            //  限制 round
             if (round > 4)
             {
                 round = 4;
@@ -624,53 +734,8 @@ public class InteracteGUI : MonoBehaviour
 }
 ```
 
-### 2 编写一个简单的自定义 Component 
-
-> 用自定义组件定义几种飞碟，做成预制
->
-> - 参考官方脚本手册 https://docs.unity3d.com/ScriptReference/Editor.html
-> - 实现自定义组件，编辑并赋予飞碟一些属性
-
-自定义组件的实现要求可以在 Unity3D 的 Inspector 界面对飞碟的大小颜色分数等进行编辑。需要继承 Editor 类，还需要显示当前的属性值，由 OnEnable() 实现，而修改属性值则通过 OnInspectorGUI() 实现，分数是一个区间所以设置为一个滑动条，大小可以在0～10内拖动，而大小、颜色则有自适应的调整方式。
-
-代码如下：
-
-```C#
-using UnityEngine;
-using UnityEditor;
-using System.Collections;
-[CustomEditor(typeof(UFO))]
-[CanEditMultipleObjects]
-
-public class UfoEditor : Editor
-{
-	SerializedProperty score;  
-	SerializedProperty scale;
-	SerializedProperty color;    
-
-	void OnEnable()
-	{
-		score = serializedObject.FindProperty("score");
-		color = serializedObject.FindProperty("color");
-		scale = serializedObject.FindProperty("scale");
-	}
-
-	public override void OnInspectorGUI()
-	{
-		serializedObject.Update();
-		//	大小可以在0～10内拖动，表示一个UFO的分数
-		EditorGUILayout.IntSlider(score, 0, 4, new GUIContent("score"));
-		//	有自适应的调整方式
-		EditorGUILayout.PropertyField(scale);
-		EditorGUILayout.PropertyField(color);
-		serializedObject.ApplyModifiedProperties();
-	}
-}
-```
-
 ## 参考资料
 
-[1] [与游戏世界交互_教学讲义](https://pmlpml.github.io/unity3d-learning/05-interaction-with-gameworld)
+[1] [物理系统与碰撞_教学讲义](https://pmlpml.github.io/unity3d-learning/06-physics-and-collision)
 
 [2] [Maunal](https://docs.unity3d.com/Manual/index.html)
-
