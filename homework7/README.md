@@ -7,8 +7,6 @@
 
 ## README
 
-#### 项目地址
-
 **博客地址：** https://sentimentalswordsman.github.io/2019/10/25/3dG7-模型与动画/
 
 **Ranger 视频地址：** https://www.bilibili.com/video/av74312723/
@@ -49,7 +47,7 @@
 
 <img src="./image/4.png"/>
 
-#### 项目设计
+### 项目设计
 
 **目录结构**
 
