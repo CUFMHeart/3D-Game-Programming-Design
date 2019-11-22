@@ -8,13 +8,13 @@
 
 **博客地址：** https://sentimentalswordsman.github.io/2019/11/20/3dG9-UI系统/
 
-**视频地址：**https://www.bilibili.com/video/av76655299/
+**视频地址：** https://www.bilibili.com/video/av76655299/
 
 ## UI 系统
 
 ### Unity UI 技术概述
 
-UI 即 **User Interface（用户界面）**的简称。在许多软件中，采用狭义的概念，特指窗体、面板、按钮、文本框等人们熟悉的人机交互元素，及其组织与风格（也称皮肤）。Unity UI 系统采用上述狭义概念。
+UI 即 **User Interface（用户界面）** 的简称。在许多软件中，采用狭义的概念，特指窗体、面板、按钮、文本框等人们熟悉的人机交互元素，及其组织与风格（也称皮肤）。Unity UI 系统采用上述狭义概念。
 
 Unity 目前支持三套完全不同风格的 UI 系统：
 
@@ -26,7 +26,7 @@ Unity 目前支持三套完全不同风格的 UI 系统：
 
 **画布**
 
-画布（Cavas）是绘图区域, 同时是 ui 元素的容器。 容器中 ui 元素及其子 UI 元素都将绘制在其上。 拥有Canvas组件的游戏对象都有一个画布，它空间中的子对象，如果是 UI 元素将渲染在画布上。画布区域在场景视图中显示为矩形。这使得定位UI元素变得非常容易，无需随时显示游戏运行视图。
+画布（Cavas）是绘图区域, 同时是 UI 元素的容器。 容器中 ui 元素及其子 UI 元素都将绘制在其上。 拥有Canvas组件的游戏对象都有一个画布，它空间中的子对象，如果是 UI 元素将渲染在画布上。画布区域在场景视图中显示为矩形。这使得定位UI元素变得非常容易，无需随时显示游戏运行视图。
 
  **UI 布局基础**
 
@@ -112,7 +112,7 @@ UI 部件都是用 Script 开发的自定义组件。包括在 UI、Layout 和 R
   }
   ```
 
-- **代码设计2**：对表示物体的Image对象添加脚本以实现拖拽的UI效果，需要使用到接口IBeginDragHandler、IDragHandler、IEndDragHandler，代码如下所示。
+- **代码设计2** ：对表示物体的Image对象添加脚本以实现拖拽的UI效果，需要使用到接口IBeginDragHandler、IDragHandler、IEndDragHandler，代码如下所示。
 
   ```C#
   using UnityEngine;
